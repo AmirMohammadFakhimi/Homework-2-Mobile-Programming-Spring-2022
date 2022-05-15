@@ -3,16 +3,16 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/mobile_navigation"
-    app:startDestination="@+id/navigation_home">
+    app:startDestination="@+id/navigation_weather">
 
     <fragment
-        android:id="@+id/navigation_home"
+        android:id="@+id/navigation_weather"
         android:name="edu.sharif.weather.ui.weather.WeatherFragment"
         android:label="@string/app_name"
         tools:layout="@layout/fragment_Weather" />
 
     <fragment
-        android:id="@+id/navigation_dashboard"
+        android:id="@+id/navigation_settings"
         android:name="edu.sharif.weather.ui.settings.SettingsFragment"
         android:label="@string/title_settings"
         tools:layout="@layout/fragment_settings" />

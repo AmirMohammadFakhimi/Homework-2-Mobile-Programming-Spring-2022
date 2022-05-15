@@ -2,11 +2,15 @@ package edu.sharif.weather.ui.weather;
 
 import android.os.Build;
 import android.os.Bundle;
-import android.util.Log;
+import android.os.Handler;
+import android.os.Looper;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
+import android.widget.Button;
+import android.widget.EditText;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -14,13 +18,27 @@ import androidx.annotation.RequiresApi;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.lifecycle.ViewModelProviders;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
-import edu.sharif.weather.WeatherClassViewModel;
+import java.time.format.DateTimeFormatter;
+import java.util.Timer;
+import java.util.TimerTask;
+
+import edu.sharif.weather.CityViewModel;
+import edu.sharif.weather.EditTextValidator;
+import edu.sharif.weather.ForecastRecyclerViewAdaptor;
+import edu.sharif.weather.R;
 import edu.sharif.weather.databinding.FragmentWeatherBinding;
 
 public class WeatherFragment extends Fragment {
 
     private FragmentWeatherBinding binding;
+    private EditText latitude;
+    private EditText longitude;
+    private Button submitButton;
+    private CityViewModel viewModel;
+    private ForecastRecyclerViewAdaptor adapter;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -30,8 +48,8 @@ public class WeatherFragment extends Fragment {
         binding = FragmentWeatherBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
-        final TextView textView = binding.textHome;
-        weatherTabViewModel.getText().observe(getViewLifecycleOwner(), textView::setText);
+//        final TextView textView = binding.textHome;
+//        weatherTabViewModel.getText().observe(getViewLifecycleOwner(), textView::setText);
         return root;
     }
 
@@ -40,18 +58,134 @@ public class WeatherFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        WeatherClassViewModel viewModel = ViewModelProviders.of(this).get(WeatherClassViewModel.class);
-        viewModel.setWeather();
+        latitude = binding.latitudeEditText;
+        longitude = binding.longitudeEditText;
+        submitButton = binding.submitButton;
 
-        viewModel.getWeather().observe(getViewLifecycleOwner(), weather -> {
-            if (weather != null)
-                binding.textHome.setText(weather.getTemp());
+        binding.longitudeLatitudeRadio.setOnCheckedChangeListener((group, isChecked) -> {
+            if (isChecked) {
+                latitude.setVisibility(View.VISIBLE);
+                longitude.setVisibility(View.VISIBLE);
+                binding.cityEditText.setVisibility(View.INVISIBLE);
+            }
         });
+
+        binding.cityRadio.setOnCheckedChangeListener((group, isChecked) -> {
+            if (isChecked) {
+                binding.cityEditText.setVisibility(View.VISIBLE);
+                latitude.setVisibility(View.INVISIBLE);
+                longitude.setVisibility(View.INVISIBLE);
+            }
+        });
+
+        addDelayForEditText(latitude, longitude);
+        addDelayForEditText(longitude, latitude);
+
+        addValidatorForEditText(latitude, longitude, 90);
+        addValidatorForEditText(longitude, latitude, 180);
+
+        viewModel = ViewModelProviders.of(this).get(CityViewModel.class);
     }
 
     @Override
     public void onDestroyView() {
         super.onDestroyView();
         binding = null;
+    }
+
+    private void addDelayForEditText(EditText main, EditText toValidate) {
+        main.addTextChangedListener(
+                new TextWatcher() {
+                    private Timer timer = new Timer();
+
+                    @Override
+                    public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+                    }
+
+                    @Override
+                    public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+                    }
+
+                    @Override
+                    public void afterTextChanged(final Editable s) {
+                        timer.cancel();
+                        timer = new Timer();
+                        //Milliseconds
+                        long DELAY = 5000;
+                        timer.schedule(
+                                new TimerTask() {
+                                    @RequiresApi(api = Build.VERSION_CODES.O)
+                                    @Override
+                                    public void run() {
+//                                        TODO: bug -> it runs twice
+                                        if (main.getError() == null && !main.getText().toString().isEmpty() &&
+                                                (toValidate == null || (toValidate.getError() == null && !toValidate.getText().toString().isEmpty()))) {
+                                            new Handler(Looper.getMainLooper()).post(() -> {
+                                                binding.progressBar.setVisibility(View.VISIBLE);
+                                                submitButton.setEnabled(false);
+                                                getCityInfo();
+                                            });
+                                        }
+                                    }
+                                },
+                                DELAY
+                        );
+                    }
+                });
+    }
+
+    private void addValidatorForEditText(EditText main, EditText toValidate, int limit) {
+        main.addTextChangedListener(new EditTextValidator(main) {
+            @Override
+            public void validate(EditText editText, String text) {
+                if (text.isEmpty()) {
+                    submitButton.setEnabled(false);
+                    return;
+                }
+
+                double longitude = Double.parseDouble(text);
+                if (longitude < -limit || longitude > limit) {
+                    editText.setError("Must be between -" + limit + " and " + limit);
+                    submitButton.setEnabled(false);
+                } else
+                    submitButton.setEnabled(toValidate.getError() == null &&
+                            !toValidate.getText().toString().isEmpty());
+            }
+        });
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    private void getCityInfo() {
+        double latitude = Double.parseDouble(this.latitude.getText().toString());
+        double longitude = Double.parseDouble(this.longitude.getText().toString());
+
+        viewModel.getCityInfo(latitude, longitude).observe(getViewLifecycleOwner(), city -> {
+            binding.progressBar.setVisibility(View.INVISIBLE);
+            if (city == null) {
+                binding.cityInfo.setText(R.string.no_city_selected);
+                if (adapter != null) adapter.clear();
+                return;
+            }
+
+            String cityName;
+            if (city.getName() == null)
+                cityName = "City name not found";
+            else
+                cityName = city.getName();
+
+            binding.cityInfo.setText(String.valueOf(cityName + "\n" +
+                    latitude + "°, " + longitude + "°\n" +
+                    "Last Update: " + city.getLastUpdatedTime().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"))));
+
+            if (city.getWeatherForecasts() != null) {
+                RecyclerView forecastRecyclerView = binding.forecastRecyclerView;
+                forecastRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+                adapter = new ForecastRecyclerViewAdaptor(getContext(), city.getWeatherForecasts());
+//                adapter.setClickListener(this);
+                forecastRecyclerView.setAdapter(adapter);
+            }
+        });
     }
 }

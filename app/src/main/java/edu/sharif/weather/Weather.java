@@ -1,61 +1,75 @@
 package edu.sharif.weather;
 
+import androidx.annotation.NonNull;
 import androidx.room.Entity;
-
-import java.util.ArrayList;
 
 @Entity(primaryKeys = {"longitude", "latitude"})
 public class Weather {
-    private static ArrayList<Weather> allWeather = new ArrayList<>();
+    private double currentTemperature;
+    private double minTemperature;
+    private double maxTemperature;
+    private double feelsLike;
+    private double pressure;
+    private double humidity;
 
-    private final double longitude;
-    private final double latitude;
-    private String city = null;
-    private String lastUpdatedTime;
-//    private double temperature;
-//    private double feelsLike;
-//    private double minTemperature;
-//    private double maxTemperature;
-//    private double pressure;
-//    private double humidity;
-    private String temp;
-
-    public Weather(double longitude, double latitude, String lastUpdatedTime) {
-        this.longitude = longitude;
-        this.latitude = latitude;
-        this.lastUpdatedTime = lastUpdatedTime;
-        allWeather.add(this);
+    public double getCurrentTemperature() {
+        return currentTemperature;
     }
 
-    public double getLongitude() {
-        return longitude;
+    public void setCurrentTemperature(double currentTemperature) {
+        this.currentTemperature = currentTemperature;
     }
 
-    public double getLatitude() {
-        return latitude;
+    public double getFeelsLike() {
+        return feelsLike;
     }
 
-    public String getCity() {
-        return city;
+    public void setFeelsLike(double feelsLike) {
+        this.feelsLike = feelsLike;
     }
 
-    public void setCity(String city) {
-        this.city = city;
+    public double getMinTemperature() {
+        return minTemperature;
     }
 
-    public String getLastUpdatedTime() {
-        return lastUpdatedTime;
+    public void setMinTemperature(double minTemperature) {
+        this.minTemperature = minTemperature;
     }
 
-    public void setLastUpdatedTime(String lastUpdatedTime) {
-        this.lastUpdatedTime = lastUpdatedTime;
+    public double getMaxTemperature() {
+        return maxTemperature;
     }
 
-    public void setTemp(String temp) {
-        this.temp = temp;
+    public void setMaxTemperature(double maxTemperature) {
+        this.maxTemperature = maxTemperature;
     }
 
-    public String getTemp() {
-        return temp;
+    public double getPressure() {
+        return pressure;
+    }
+
+    public void setPressure(double pressure) {
+        this.pressure = pressure;
+    }
+
+    public double getHumidity() {
+        return humidity;
+    }
+
+    public void setHumidity(double humidity) {
+        this.humidity = humidity;
+    }
+
+    @NonNull
+    @Override
+    public String toString() {
+        return "Weather{" +
+                "currentTemperature=" + currentTemperature +
+                ", feelsLike=" + feelsLike +
+                ", minTemperature=" + minTemperature +
+                ", maxTemperature=" + maxTemperature +
+                ", pressure=" + pressure +
+                ", humidity=" + humidity +
+                '}';
     }
 }

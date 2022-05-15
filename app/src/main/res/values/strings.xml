@@ -1,4 +1,14 @@
 <resources>
     <string name="app_name">Weather</string>
     <string name="title_settings">Settings</string>
+
+    <string name="geographical_coordinates">Geographical Coordinates</string>
+    <string name="longitude">longitude</string>
+    <string name="latitude">latitude</string>
+    <string name="city">city</string>
+    <string name="submit">Submit</string>
+
+    <string name="by_longitude_latitude">By Longitude &amp; Latitude</string>
+    <string name="by_city">By City</string>
+    <string name="no_city_selected">No City Selected</string>
 </resources>

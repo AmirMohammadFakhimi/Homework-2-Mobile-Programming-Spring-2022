@@ -3,12 +3,18 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="../../../../layout/custom_preview.xml" value="0.29259259259259257" />
         <entry key="app/src/main/res/drawable/ic_dashboard_black_24dp.xml" value="0.14" />
         <entry key="app/src/main/res/drawable/ic_notifications_black_24dp.xml" value="0.14" />
         <entry key="app/src/main/res/drawable/ic_weather.xml" value="0.14" />
+        <entry key="app/src/main/res/drawable/radio_flat_regular.xml" value="0.147" />
+        <entry key="app/src/main/res/drawable/radio_flat_selected.xml" value="0.147" />
+        <entry key="app/src/main/res/drawable/radio_flat_selector.xml" value="0.147" />
         <entry key="app/src/main/res/layout/activity_main.xml" value="0.382051282051282" />
+        <entry key="app/src/main/res/layout/forecast_recycler_view_row.xml" value="0.26296296296296295" />
         <entry key="app/src/main/res/layout/fragment_settings.xml" value="0.3880208333333333" />
-        <entry key="app/src/main/res/layout/fragment_weather.xml" value="0.3880208333333333" />
+        <entry key="app/src/main/res/layout/fragment_weather.xml" value="0.29206288655598955" />
+        <entry key="app/src/main/res/layout/radio_flat_selector.xml" value="0.3880208333333333" />
         <entry key="app/src/main/res/menu/bottom_nav_menu.xml" value="0.18703703703703703" />
       </map>
     </option>

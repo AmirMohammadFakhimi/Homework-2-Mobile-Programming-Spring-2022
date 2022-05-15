@@ -2,12 +2,12 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
     <item
-        android:id="@+id/navigation_home"
+        android:id="@+id/navigation_weather"
         android:icon="@drawable/ic_weather"
         android:title="@string/app_name" />
 
     <item
-        android:id="@+id/navigation_dashboard"
+        android:id="@+id/navigation_settings"
         android:icon="@drawable/ic_settings"
         android:title="@string/title_settings" />
 
