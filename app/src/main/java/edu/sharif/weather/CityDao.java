@@ -3,13 +3,10 @@ package edu.sharif.weather;
 import androidx.lifecycle.LiveData;
 import androidx.room.Dao;
 import androidx.room.Insert;
-import androidx.room.OnConflictStrategy;
 import androidx.room.Query;
-import androidx.room.Update;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.List;
 
 @Dao
 public interface CityDao {
@@ -28,8 +25,8 @@ public interface CityDao {
     LiveData<City> getCity(double latitude, double longitude);
 
     @Query("DELETE FROM city")
-    public void deleteTable();
+    void deleteTable();
 
     @Query("SELECT COUNT() FROM city WHERE latitude = :latitude AND longitude = :longitude")
-    public int count(double latitude, double longitude);
+    int count(double latitude, double longitude);
 }

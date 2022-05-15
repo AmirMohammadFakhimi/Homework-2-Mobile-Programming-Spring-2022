@@ -2,7 +2,7 @@ package edu.sharif.weather;
 
 import android.app.Application;
 import android.os.Build;
-import android.util.Log;
+import android.view.View;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
@@ -16,22 +16,20 @@ public class CityViewModel extends AndroidViewModel {
     public CityViewModel(@NonNull Application application) {
         super(application);
         cityRepository = new CityRepository(application);
-//        city = cityRepository.getCity();
+        city = cityRepository.getCity();
     }
 
-    public LiveData<City> getCity() {
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    public LiveData<City> getCityInfo(View view, double latitude, double longitude) {
+//        TODO: maybe it's not correct to pass view to viewModel
+        city = cityRepository.getCityInfo(view, latitude, longitude);
         return city;
     }
 
-//    @RequiresApi(api = Build.VERSION_CODES.O)
-//    public void setCity() {
-//        cityRepository.getCityInfo(getApplication(), 0, 0);
-//        this.city = cityRepository.getCity();
-//    }
-
     @RequiresApi(api = Build.VERSION_CODES.O)
-    public LiveData<City> getCityInfo(double latitude, double longitude) {
-        city = cityRepository.getCityInfo(getApplication(), latitude, longitude);
+    public LiveData<City> getCityInfo(View view, String cityName) {
+//        TODO: maybe it's not correct to pass view to viewModel
+        city = cityRepository.getCityInfo(view, cityName);
         return city;
     }
 }

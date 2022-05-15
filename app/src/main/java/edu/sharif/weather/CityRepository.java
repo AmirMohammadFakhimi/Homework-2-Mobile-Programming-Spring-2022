@@ -1,16 +1,16 @@
 package edu.sharif.weather;
 
+import android.annotation.SuppressLint;
 import android.app.Application;
-import android.content.Context;
 import android.os.Build;
 import android.util.Log;
+import android.view.View;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.lifecycle.LiveData;
 
-import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.StringRequest;
@@ -22,11 +22,9 @@ import org.json.JSONObject;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.concurrent.ThreadPoolExecutor;
-import java.util.concurrent.TimeUnit;
 
 public class CityRepository {
-    private CityDao cityDao;
+    private final CityDao cityDao;
     private LiveData<City> city;
     private City tempCity;
 
@@ -35,17 +33,23 @@ public class CityRepository {
                 edu.sharif.weather.CityRoomDatabase.getInstance(application);
 
         cityDao = database.weatherDao();
-        Thread thread = new Thread(() -> cityDao.deleteTable());
-        thread.setPriority(Thread.MAX_PRIORITY);
-        thread.start();
+
+//        UNCOMMENT TO CLEAR DATA IN DATABASE
+//        Thread thread = new Thread(cityDao::deleteTable);
+//        thread.start();
+//        try {
+//            thread.join();
+//        } catch (InterruptedException e) {
+//            e.printStackTrace();
+//        }
     }
 
     @RequiresApi(api = Build.VERSION_CODES.O)
-    synchronized public LiveData<City> getCityInfo(Context context, double latitude, double longitude) {
+    synchronized public LiveData<City> getCityInfo(View view, double latitude, double longitude) {
         tempCity = new City(null, latitude, longitude, LocalDateTime.now());
-        RequestQueue queue = Volley.newRequestQueue(context);
-        StringRequest cityNameRequest = getCityName(context, latitude, longitude);
-        StringRequest cityWeatherForecastsRequest = getCityWeatherForecasts(context, latitude, longitude);
+        RequestQueue queue = Volley.newRequestQueue(view.getContext());
+        StringRequest cityNameRequest = getCityName(view, latitude, longitude);
+        StringRequest cityWeatherForecastsRequest = getCityWeatherForecasts(view, latitude, longitude);
 
         queue.add(cityNameRequest);
         queue.add(cityWeatherForecastsRequest);
@@ -54,23 +58,41 @@ public class CityRepository {
         return city;
     }
 
-    public StringRequest getCityName(Context context, double latitude, double longitude) {
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    synchronized public LiveData<City> getCityInfo(View view, String cityName) {
+        RequestQueue queue = Volley.newRequestQueue(view.getContext());
+        StringRequest getLatitudeAndLongitude = getCityLatAndLong(view, cityName);
+        queue.add(getLatitudeAndLongitude);
+        queue.start();
+
+        StringRequest cityWeatherForecastsRequest = getCityWeatherForecasts(view,
+                tempCity.getLatitude(), tempCity.getLongitude());
+        queue.add(cityWeatherForecastsRequest);
+        queue.start();
+
+        city = cityDao.getCity(tempCity.getLatitude(), tempCity.getLongitude());
+        return city;
+    }
+
+    public StringRequest getCityName(View view, double latitude, double longitude) {
         String cityApiUrl = "https://api.mapbox.com/geocoding/v5/mapbox.places/" + longitude +
                 "," + latitude + ".json?access_token=" + BuildConfig.MAP_BOX_API_KEY;
 
-        StringRequest stringRequest = new StringRequest(Request.Method.GET, cityApiUrl, response -> {
+        return new StringRequest(Request.Method.GET, cityApiUrl, response -> {
             try {
                 JSONObject cityInfoString = new JSONObject(response);
                 JSONArray cityJsonFeatures = cityInfoString.getJSONArray("features");
                 if (cityJsonFeatures.length() == 0)
                     return;
 
-                JSONArray cityJsonDetails = cityJsonFeatures.getJSONObject(0).getJSONArray("context");
+                JSONArray cityJsonDetails = cityJsonFeatures.getJSONObject(0)
+                        .getJSONArray("context");
                 String cityName = null;
                 for (int i = 0; i < cityJsonDetails.length(); i++) {
                     JSONObject cityJsonDetail = cityJsonDetails.getJSONObject(i);
                     if (cityJsonDetail.getString("id").startsWith("place")) {
                         cityName = cityJsonDetail.getString("text");
+                        break;
                     }
                 }
 
@@ -86,48 +108,64 @@ public class CityRepository {
                         cityDao.updateName(latitude, longitude, finalCityName);
                     else
                         cityDao.insert(tempCity);
+
                 });
                 thread.join();
                 thread.start();
             } catch (JSONException | InterruptedException e) {
                 e.printStackTrace();
-                Toast.makeText(context, "Unexpected Error!\n" +
-                        response, Toast.LENGTH_LONG).show();
+                createToast(view, "Unexpected Error!\n" + response);
             }
 
         },
-                error -> Toast.makeText(context, "There was a problem with the connection." + error.toString(),
-                        Toast.LENGTH_LONG).show());
-
-        return stringRequest;
+                error -> createToast(view, "There was a problem with the connection."));
     }
 
     @RequiresApi(api = Build.VERSION_CODES.O)
-    private StringRequest getCityWeatherForecasts(Context context, double latitude, double longitude) {
+    private StringRequest getCityWeatherForecasts(View view, double latitude, double longitude) {
         String weatherApiUrl = "https://api.openweathermap.org/data/2.5/onecall?lat=" + latitude +
                 "&lon=" + longitude + "&appid=" + BuildConfig.OPEN_WEATHER_MAP_API_KEY;
 
-        StringRequest stringRequest =  new StringRequest(Request.Method.GET, weatherApiUrl, response -> {
+        return new StringRequest(Request.Method.GET, weatherApiUrl, response -> {
             try {
                 JSONObject weatherString = new JSONObject(response);
-                JSONArray forecasts = weatherString.getJSONArray("daily");
-
                 ArrayList<Weather> weathers = new ArrayList<>();
+                Weather weather = new Weather();
+
+//                add today weather
+                JSONObject todayWeather = weatherString.getJSONObject("current");
+                weather.setTemperature(todayWeather.getDouble("temp"));
+                weather.setFeelsLike(todayWeather.getDouble("feels_like"));
+                weather.setPressure(todayWeather.getDouble("pressure"));
+                weather.setHumidity(todayWeather.getDouble("humidity"));
+                weather.setIcon(todayWeather.getJSONArray("weather").getJSONObject(0)
+                        .getString("icon"));
+                weather.setDescription(todayWeather.getJSONArray("weather").getJSONObject(0)
+                        .getString("description"));
+
+                weathers.add(weather);
+
+//                add forecasts
+                JSONArray forecasts = weatherString.getJSONArray("daily");
                 for (int i = 0; i < forecasts.length(); i++) {
-                    Weather weather = new Weather();
+                    weather = new Weather();
                     JSONObject forecast = forecasts.getJSONObject(i);
-                    weather.setCurrentTemperature(forecast.getJSONObject("temp").getDouble("day"));
+                    weather.setTemperature(forecast.getJSONObject("temp").getDouble("day"));
                     weather.setMinTemperature(forecast.getJSONObject("temp").getDouble("min"));
                     weather.setMaxTemperature(forecast.getJSONObject("temp").getDouble("max"));
                     weather.setFeelsLike(forecast.getJSONObject("feels_like").getDouble("day"));
                     weather.setPressure(forecast.getDouble("pressure"));
                     weather.setHumidity(forecast.getDouble("humidity"));
+                    weather.setIcon(forecast.getJSONArray("weather").getJSONObject(0)
+                            .getString("icon"));
+                    weather.setDescription(forecast.getJSONArray("weather").getJSONObject(0)
+                            .getString("description"));
 
                     weathers.add(weather);
                 }
 
                 tempCity.setWeatherForecasts(weathers);
-                Thread thread = new Thread(() -> {
+                @SuppressLint("ResourceType") Thread thread = new Thread(() -> {
                     boolean isCacheAvailable = cityDao.count(latitude, longitude) > 0;
 
                     if (isCacheAvailable)
@@ -139,18 +177,56 @@ public class CityRepository {
                 thread.start();
             } catch (JSONException | InterruptedException e) {
                 e.printStackTrace();
-                Toast.makeText(context, "Unexpected Error!\n" +
-                        response, Toast.LENGTH_LONG).show();
+                createToast(view, "Unexpected Error!\n" + response);
             }
 
         },
-                error -> Toast.makeText(context, "There was a problem with the connection." + error.toString(),
-                        Toast.LENGTH_LONG).show());
+                error -> createToast(view, "There was a problem with the connection."));
+    }
 
-        return stringRequest;
+    public StringRequest getCityLatAndLong(View view, String cityName) {
+        String cityApiUrl = "https://api.mapbox.com/geocoding/v5/mapbox.places/" +
+                cityName + ".json?access_token=" + BuildConfig.MAP_BOX_API_KEY;
+
+        return new StringRequest(Request.Method.GET, cityApiUrl, response -> {
+            try {
+                JSONObject cityInfoString = new JSONObject(response);
+                JSONArray cityJsonFeatures = cityInfoString.getJSONArray("features");
+                if (cityJsonFeatures.length() == 0)
+                    return;
+
+                JSONArray cityJsonDetails = cityJsonFeatures.getJSONObject(0)
+                        .getJSONArray("center");
+
+                double latitude = cityJsonDetails.getDouble(1);
+                double longitude = cityJsonDetails.getDouble(0);
+                tempCity = new City(cityName, latitude, longitude, LocalDateTime.now());
+                Thread thread = new Thread(() -> {
+                    boolean isCacheAvailable = cityDao.count(latitude, longitude) > 0;
+
+                    if (isCacheAvailable)
+                        cityDao.updateName(latitude, longitude, cityName);
+                    else
+                        cityDao.insert(tempCity);
+
+                });
+                thread.join();
+                thread.start();
+            } catch (JSONException | InterruptedException e) {
+                e.printStackTrace();
+                createToast(view, "Unexpected Error!\n" + response);
+            }
+
+        },
+                error -> createToast(view, "There was a problem with the connection."));
     }
 
     public LiveData<City> getCity() {
         return city;
+    }
+
+    private void createToast(View view, String message) {
+        view.findViewById(R.id.progressBar).setVisibility(View.INVISIBLE);
+        Toast.makeText(view.getContext(), message, Toast.LENGTH_LONG).show();
     }
 }

@@ -1,11 +1,13 @@
 package edu.sharif.weather.ui.weather;
 
+import android.annotation.SuppressLint;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -25,6 +27,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import edu.sharif.weather.City;
 import edu.sharif.weather.CityViewModel;
 import edu.sharif.weather.EditTextValidator;
 import edu.sharif.weather.ForecastRecyclerViewAdaptor;
@@ -36,6 +39,7 @@ public class WeatherFragment extends Fragment {
     private FragmentWeatherBinding binding;
     private EditText latitude;
     private EditText longitude;
+    private EditText inputCity;
     private Button submitButton;
     private CityViewModel viewModel;
     private ForecastRecyclerViewAdaptor adapter;
@@ -46,11 +50,7 @@ public class WeatherFragment extends Fragment {
                 new ViewModelProvider(this, new ViewModelProvider.NewInstanceFactory()).get(WeatherTabViewModel.class);
 
         binding = FragmentWeatherBinding.inflate(inflater, container, false);
-        View root = binding.getRoot();
-
-//        final TextView textView = binding.textHome;
-//        weatherTabViewModel.getText().observe(getViewLifecycleOwner(), textView::setText);
-        return root;
+        return binding.getRoot();
     }
 
     @RequiresApi(api = Build.VERSION_CODES.O)
@@ -60,13 +60,15 @@ public class WeatherFragment extends Fragment {
 
         latitude = binding.latitudeEditText;
         longitude = binding.longitudeEditText;
+        inputCity = binding.cityEditText;
         submitButton = binding.submitButton;
 
-        binding.longitudeLatitudeRadio.setOnCheckedChangeListener((group, isChecked) -> {
+        binding.latitudeLongitudeRadio.setOnCheckedChangeListener((group, isChecked) -> {
             if (isChecked) {
                 latitude.setVisibility(View.VISIBLE);
                 longitude.setVisibility(View.VISIBLE);
                 binding.cityEditText.setVisibility(View.INVISIBLE);
+                submitButton.setEnabled(true);
             }
         });
 
@@ -75,11 +77,13 @@ public class WeatherFragment extends Fragment {
                 binding.cityEditText.setVisibility(View.VISIBLE);
                 latitude.setVisibility(View.INVISIBLE);
                 longitude.setVisibility(View.INVISIBLE);
+                submitButton.setEnabled(true);
             }
         });
 
         addDelayForEditText(latitude, longitude);
         addDelayForEditText(longitude, latitude);
+        addDelayForEditText(inputCity, null);
 
         addValidatorForEditText(latitude, longitude, 90);
         addValidatorForEditText(longitude, latitude, 180);
@@ -123,6 +127,7 @@ public class WeatherFragment extends Fragment {
                                         if (main.getError() == null && !main.getText().toString().isEmpty() &&
                                                 (toValidate == null || (toValidate.getError() == null && !toValidate.getText().toString().isEmpty()))) {
                                             new Handler(Looper.getMainLooper()).post(() -> {
+                                                if (adapter != null) adapter.clear();
                                                 binding.progressBar.setVisibility(View.VISIBLE);
                                                 submitButton.setEnabled(false);
                                                 getCityInfo();
@@ -156,13 +161,27 @@ public class WeatherFragment extends Fragment {
         });
     }
 
+    @SuppressLint("SetTextI18n")
     @RequiresApi(api = Build.VERSION_CODES.O)
     private void getCityInfo() {
-        double latitude = Double.parseDouble(this.latitude.getText().toString());
-        double longitude = Double.parseDouble(this.longitude.getText().toString());
+        if (binding.latitudeLongitudeRadio.isChecked()) {
+            double latitude = Double.parseDouble(this.latitude.getText().toString());
+            double longitude = Double.parseDouble(this.longitude.getText().toString());
 
-        viewModel.getCityInfo(latitude, longitude).observe(getViewLifecycleOwner(), city -> {
-            binding.progressBar.setVisibility(View.INVISIBLE);
+            viewModel.getCityInfo(this.getView(), latitude, longitude)
+                    .observe(getViewLifecycleOwner(), this::doOnObserve);
+        } else {
+            String cityName = inputCity.getText().toString();
+
+            viewModel.getCityInfo(this.getView(), cityName).observe(
+                    getViewLifecycleOwner(), this::doOnObserve);
+        }
+
+    }
+
+    @SuppressLint("SetTextI18n")
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    private void doOnObserve(City city) {
             if (city == null) {
                 binding.cityInfo.setText(R.string.no_city_selected);
                 if (adapter != null) adapter.clear();
@@ -175,17 +194,20 @@ public class WeatherFragment extends Fragment {
             else
                 cityName = city.getName();
 
-            binding.cityInfo.setText(String.valueOf(cityName + "\n" +
-                    latitude + "°, " + longitude + "°\n" +
-                    "Last Update: " + city.getLastUpdatedTime().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"))));
+//            TODO: lastUpdatedTime updates same as liveData!!!!
+            binding.cityInfo.setText(cityName + "\n" +
+                    city.getLatitude() + "°, " + city.getLongitude() + "°\n" +
+                    "Last Update: " + city.getLastUpdatedTime()
+                    .format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")));
 
             if (city.getWeatherForecasts() != null) {
+                binding.progressBar.setVisibility(View.INVISIBLE);
+
                 RecyclerView forecastRecyclerView = binding.forecastRecyclerView;
                 forecastRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
                 adapter = new ForecastRecyclerViewAdaptor(getContext(), city.getWeatherForecasts());
 //                adapter.setClickListener(this);
                 forecastRecyclerView.setAdapter(adapter);
             }
-        });
     }
 }

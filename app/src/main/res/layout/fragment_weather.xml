@@ -22,7 +22,7 @@
 
 
         <RadioButton
-            android:id="@+id/longitude_latitude_radio"
+            android:id="@+id/latitude_longitude_radio"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
@@ -31,7 +31,7 @@
             android:checked="true"
             android:gravity="center"
             android:minHeight="@dimen/custom_radio_button_height"
-            android:text="@string/by_longitude_latitude"
+            android:text="@string/by_latitude_longitude"
             android:textColor="@color/radio_flat_text_selector" />
 
         <RadioButton
@@ -62,23 +62,23 @@
         app:layout_constraintVertical_bias="0.03">
 
         <EditText
-            android:id="@+id/longitudeEditText"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:ems="10"
-            android:hint="@string/longitude"
-            android:inputType="numberSigned|numberDecimal"
-            android:minHeight="48dp" />
-
-        <EditText
             android:id="@+id/latitude_edit_text"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:ems="10"
             android:hint="@string/latitude"
-            android:inputType="textPersonName"
+            android:inputType="numberSigned|numberDecimal"
+            android:minHeight="48dp" />
+
+        <EditText
+            android:id="@+id/longitude_edit_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:ems="10"
+            android:hint="@string/longitude"
+            android:inputType="numberSigned|numberDecimal"
             android:minHeight="48dp" />
     </LinearLayout>
 
@@ -127,7 +127,7 @@
         android:id="@+id/forecast_recycler_view"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="10dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

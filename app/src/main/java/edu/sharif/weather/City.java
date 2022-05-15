@@ -15,11 +15,11 @@ public class City {
     private final double latitude;
     private final double longitude;
     private LocalDateTime lastUpdatedTime;
-    private ArrayList<Weather> weatherForecasts;
 
-    {
-        weatherForecasts = new ArrayList<>();
-    }
+/*    weatherForecasts[0] does not have min and max temperature
+      because it is today's weather
+ */
+    private ArrayList<Weather> weatherForecasts;
 
     public City(String name, double latitude, double longitude, LocalDateTime lastUpdatedTime) {
         this.name = name;
@@ -60,10 +60,6 @@ public class City {
     public void setWeatherForecasts(ArrayList<Weather> weatherForecasts) {
         this.weatherForecasts = weatherForecasts;
         lastUpdatedTime = LocalDateTime.now();
-    }
-
-    public void addWeatherForecast(Weather weather, int day) {
-        weatherForecasts.add(day, weather);
     }
 
     @NonNull
