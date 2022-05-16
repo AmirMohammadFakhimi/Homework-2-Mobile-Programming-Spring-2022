@@ -63,14 +63,8 @@ public class CityRepository {
         RequestQueue queue = Volley.newRequestQueue(view.getContext());
         StringRequest getLatitudeAndLongitude = getCityLatAndLong(view, cityName);
         queue.add(getLatitudeAndLongitude);
-        queue.start();
 
-        StringRequest cityWeatherForecastsRequest = getCityWeatherForecasts(view,
-                tempCity.getLatitude(), tempCity.getLongitude());
-        queue.add(cityWeatherForecastsRequest);
-        queue.start();
-
-        city = cityDao.getCity(tempCity.getLatitude(), tempCity.getLongitude());
+        city = cityDao.getCity(cityName);
         return city;
     }
 
@@ -184,6 +178,7 @@ public class CityRepository {
                 error -> createToast(view, "There was a problem with the connection."));
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.O)
     public StringRequest getCityLatAndLong(View view, String cityName) {
         String cityApiUrl = "https://api.mapbox.com/geocoding/v5/mapbox.places/" +
                 cityName + ".json?access_token=" + BuildConfig.MAP_BOX_API_KEY;
@@ -201,6 +196,11 @@ public class CityRepository {
                 double latitude = cityJsonDetails.getDouble(1);
                 double longitude = cityJsonDetails.getDouble(0);
                 tempCity = new City(cityName, latitude, longitude, LocalDateTime.now());
+
+                StringRequest cityWeatherForecastsRequest = getCityWeatherForecasts(view,
+                        tempCity.getLatitude(), tempCity.getLongitude());
+                Volley.newRequestQueue(view.getContext()).add(cityWeatherForecastsRequest);
+
                 Thread thread = new Thread(() -> {
                     boolean isCacheAvailable = cityDao.count(latitude, longitude) > 0;
 

@@ -13,16 +13,19 @@ public interface CityDao {
     @Insert
     void insert(City city);
 
-    @Query("UPDATE city SET name=:name WHERE latitude = :latitude AND longitude = :longitude")
+    @Query("UPDATE city SET name = :name WHERE latitude = :latitude AND longitude = :longitude")
     void updateName(double latitude, double longitude, String name);
 
-    @Query("UPDATE city SET weatherForecasts=:weatherForecasts, lastUpdatedTime=:lastUpdatedTime " +
+    @Query("UPDATE city SET weatherForecasts = :weatherForecasts, lastUpdatedTime = :lastUpdatedTime " +
             "WHERE latitude = :latitude AND longitude = :longitude")
     void updateWeatherForecasts(double latitude, double longitude,
                                 ArrayList<Weather> weatherForecasts, LocalDateTime lastUpdatedTime);
 
     @Query("SELECT * FROM city WHERE latitude = :latitude AND longitude = :longitude")
     LiveData<City> getCity(double latitude, double longitude);
+
+    @Query("SELECT * FROM city WHERE name = :name")
+    LiveData<City> getCity(String name);
 
     @Query("DELETE FROM city")
     void deleteTable();
