@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/backGroundColor"
     tools:context=".ui.weather.WeatherFragment">
 
     <RadioGroup
@@ -14,6 +15,7 @@
         android:measureWithLargestChild="false"
         android:orientation="horizontal"
         android:weightSum="2"
+        android:background="@color/backGroundColor"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -55,6 +57,7 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:weightSum="2"
+        android:background="@color/backGroundColor"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -69,7 +72,9 @@
             android:ems="10"
             android:hint="@string/latitude"
             android:inputType="numberSigned|numberDecimal"
-            android:minHeight="48dp" />
+            android:minHeight="48dp"
+            android:textColor="@color/textColor"
+            android:textColorHint="@color/textColorHint"/>
 
         <EditText
             android:id="@+id/longitude_edit_text"
@@ -79,7 +84,9 @@
             android:ems="10"
             android:hint="@string/longitude"
             android:inputType="numberSigned|numberDecimal"
-            android:minHeight="48dp" />
+            android:minHeight="48dp"
+            android:textColor="@color/textColor"
+            android:textColorHint="@color/textColorHint"/>
     </LinearLayout>
 
     <EditText
@@ -90,6 +97,8 @@
         android:hint="@string/city"
         android:inputType="textPersonName"
         android:minHeight="48dp"
+        android:textColor="@color/textColor"
+        android:textColorHint="@color/textColor"
         android:visibility="invisible"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -108,15 +117,20 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/linearLayout2"
-        app:layout_constraintVertical_bias="0.02" />
+        app:layout_constraintVertical_bias="0.02"
+        android:textColor="@color/submitButtonTextColor"
+        android:background="@color/submitButtonbackGroundColor"/>
 
     <TextView
         android:id="@+id/city_info"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:background="@color/backGroundColor"
         android:gravity="center"
         android:text="@string/no_city_selected"
         android:textAllCaps="false"
+        android:textColor="@color/textColor"
+        android:textSize="16sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -128,10 +142,12 @@
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_marginTop="10dp"
+        android:background="@color/backGroundColor"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/city_info" />
+        app:layout_constraintTop_toBottomOf="@+id/city_info"
+        android:textColor="@color/textColor"/>
 
     <ProgressBar
         android:id="@+id/progressBar"
@@ -139,9 +155,11 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:visibility="invisible"
+        android:background="@color/backGroundColor"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/city_info" />
+        app:layout_constraintTop_toBottomOf="@+id/city_info"
+        android:textColor="@color/textColor"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

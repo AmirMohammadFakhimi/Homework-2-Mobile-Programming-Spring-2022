@@ -8,4 +8,11 @@
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
     <color name="colorAccent">#FF4081</color>
+
+    <!-- for light mode FCFCFC-->
+    <color name="backGroundColor">#B8E0FF</color>
+    <color name="textColor">#000000</color>
+    <color name="textColorHint">#5c5f61</color>
+    <color name="submitButtonTextColor">#212121</color>
+    <color name="submitButtonbackGroundColor">#FF03DAC5</color>
 </resources>
