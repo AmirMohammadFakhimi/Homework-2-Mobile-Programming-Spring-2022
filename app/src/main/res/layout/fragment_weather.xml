@@ -98,7 +98,7 @@
         android:inputType="textPersonName"
         android:minHeight="48dp"
         android:textColor="@color/textColor"
-        android:textColorHint="@color/textColor"
+        android:textColorHint="@color/textColorHint"
         android:visibility="invisible"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
