@@ -90,7 +90,7 @@ public class ForecastRecyclerViewAdaptor extends RecyclerView.Adapter<ForecastRe
         return weathers.get(id);
     }
 
-    void setClickListener(ItemClickListener itemClickListener) {
+    public void setClickListener(ItemClickListener itemClickListener) {
         this.clickListener = itemClickListener;
     }
 

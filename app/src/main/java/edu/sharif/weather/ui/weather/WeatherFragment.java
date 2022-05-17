@@ -13,6 +13,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -20,10 +21,12 @@ import androidx.annotation.RequiresApi;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.lifecycle.ViewModelProviders;
+import androidx.navigation.fragment.NavHostFragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -32,9 +35,10 @@ import edu.sharif.weather.CityViewModel;
 import edu.sharif.weather.EditTextValidator;
 import edu.sharif.weather.ForecastRecyclerViewAdaptor;
 import edu.sharif.weather.R;
+import edu.sharif.weather.Weather;
 import edu.sharif.weather.databinding.FragmentWeatherBinding;
 
-public class WeatherFragment extends Fragment {
+public class WeatherFragment extends Fragment implements ForecastRecyclerViewAdaptor.ItemClickListener {
 
     private FragmentWeatherBinding binding;
     private EditText latitude;
@@ -43,6 +47,7 @@ public class WeatherFragment extends Fragment {
     private Button submitButton;
     private CityViewModel viewModel;
     private ForecastRecyclerViewAdaptor adapter;
+    private ArrayList<Weather> weathers;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -205,9 +210,26 @@ public class WeatherFragment extends Fragment {
 
                 RecyclerView forecastRecyclerView = binding.forecastRecyclerView;
                 forecastRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-                adapter = new ForecastRecyclerViewAdaptor(getContext(), city.getWeatherForecasts());
-//                adapter.setClickListener(this);
+                weathers = city.getWeatherForecasts();
+                adapter = new ForecastRecyclerViewAdaptor(getContext(), weathers);
+                adapter.setClickListener(this);
                 forecastRecyclerView.setAdapter(adapter);
             }
+    }
+
+    @Override
+    public void onItemClick(View view, int position) {
+        Weather weather = weathers.get(position);
+        NavHostFragment.findNavController(WeatherFragment.this)
+                .navigate(WeatherFragmentDirections
+                        .actionNavigationWeatherToDetailedWeatherFragment(position,
+                                weather.getDescription(),
+                                (float) weather.getTemperature(),
+                                (float) weather.getFeelsLike(),
+                                (float) weather.getHumidity(),
+                                (float) weather.getPressure(),
+                                (float) weather.getMinTemperature(),
+                                (float) weather.getMaxTemperature(),
+                                weather.getIcon()));
     }
 }
