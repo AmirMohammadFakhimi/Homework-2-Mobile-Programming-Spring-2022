@@ -1,6 +1,7 @@
 package edu.sharif.weather.ui.weather;
 
 import android.annotation.SuppressLint;
+import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -32,6 +33,7 @@ import java.util.TimerTask;
 
 import edu.sharif.weather.City;
 import edu.sharif.weather.CityViewModel;
+import edu.sharif.weather.DetailedWeatherActivity;
 import edu.sharif.weather.EditTextValidator;
 import edu.sharif.weather.ForecastRecyclerViewAdaptor;
 import edu.sharif.weather.R;
@@ -220,7 +222,7 @@ public class WeatherFragment extends Fragment implements ForecastRecyclerViewAda
     @Override
     public void onItemClick(View view, int position) {
         Weather weather = weathers.get(position);
-        NavHostFragment.findNavController(WeatherFragment.this)
+/*        NavHostFragment.findNavController(WeatherFragment.this)
                 .navigate(WeatherFragmentDirections
                         .actionNavigationWeatherToDetailedWeatherFragment(position,
                                 weather.getDescription(),
@@ -230,6 +232,18 @@ public class WeatherFragment extends Fragment implements ForecastRecyclerViewAda
                                 (float) weather.getPressure(),
                                 (float) weather.getMinTemperature(),
                                 (float) weather.getMaxTemperature(),
-                                weather.getIcon()));
+                                 weather.getIcon()));*/
+
+        Intent intent = new Intent(getContext(), DetailedWeatherActivity.class);
+        intent.putExtra("day_number", position);
+        intent.putExtra("description", weather.getDescription());
+        intent.putExtra("temperature", weather.getTemperature());
+        intent.putExtra("feels_like", weather.getFeelsLike());
+        intent.putExtra("humidity", weather.getHumidity());
+        intent.putExtra("pressure", weather.getPressure());
+        intent.putExtra("min_temp", weather.getMinTemperature());
+        intent.putExtra("max_temp", weather.getMaxTemperature());
+        intent.putExtra("icon_code", weather.getIcon());
+        startActivity(intent);
     }
 }

@@ -13,6 +13,7 @@
         <entry key="app/src/main/res/drawable/radio_flat_regular.xml" value="0.147" />
         <entry key="app/src/main/res/drawable/radio_flat_selected.xml" value="0.147" />
         <entry key="app/src/main/res/drawable/radio_flat_selector.xml" value="0.147" />
+        <entry key="app/src/main/res/layout/activity_detailed_weather.xml" value="0.14010416666666667" />
         <entry key="app/src/main/res/layout/activity_main.xml" value="0.382051282051282" />
         <entry key="app/src/main/res/layout/forecast_recycler_view_row.xml" value="0.26296296296296295" />
         <entry key="app/src/main/res/layout/fragment_detailed_weather.xml" value="0.16156616210937502" />
