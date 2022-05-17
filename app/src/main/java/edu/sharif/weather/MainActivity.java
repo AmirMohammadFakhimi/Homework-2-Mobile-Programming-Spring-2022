@@ -3,18 +3,14 @@ package edu.sharif.weather;
 import android.os.Bundle;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.Fragment;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
-import androidx.navigation.fragment.NavHostFragment;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import edu.sharif.weather.databinding.ActivityMainBinding;
-import edu.sharif.weather.ui.weather.DetailedWeatherFragment;
-import edu.sharif.weather.ui.weather.WeatherFragment;
 
 public class MainActivity extends AppCompatActivity {
 

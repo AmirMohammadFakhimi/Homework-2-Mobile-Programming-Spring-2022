@@ -9,49 +9,12 @@
         android:id="@+id/navigation_weather"
         android:name="edu.sharif.weather.ui.weather.WeatherFragment"
         android:label="@string/app_name"
-        tools:layout="@layout/fragment_weather" >
-        <action
-            android:id="@+id/action_navigation_weather_to_detailedWeatherFragment"
-            app:destination="@id/detailedWeatherFragment" />
-    </fragment>
+        tools:layout="@layout/fragment_weather" />
 
     <fragment
         android:id="@+id/navigation_settings"
         android:name="edu.sharif.weather.ui.settings.SettingsFragment"
         android:label="@string/title_settings"
         tools:layout="@layout/fragment_settings" />
-    <fragment
-        android:id="@+id/detailedWeatherFragment"
-        android:name="edu.sharif.weather.ui.weather.DetailedWeatherFragment"
-        android:label="@string/title_detailed_weather"
-        tools:layout="@layout/fragment_detailed_weather" >
-        <argument
-            android:name="day"
-            app:argType="integer" />
-        <argument
-            android:name="description"
-            app:argType="string" />
-        <argument
-            android:name="temperature"
-            app:argType="float" />
-        <argument
-            android:name="feelsLike"
-            app:argType="float" />
-        <argument
-            android:name="humidity"
-            app:argType="float" />
-        <argument
-            android:name="pressure"
-            app:argType="float" />
-        <argument
-            android:name="minTemp"
-            app:argType="float" />
-        <argument
-            android:name="maxTemp"
-            app:argType="float" />
-        <argument
-            android:name="icon"
-            app:argType="string" />
-    </fragment>
 
 </navigation>
