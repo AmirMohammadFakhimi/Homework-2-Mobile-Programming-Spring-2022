@@ -40,8 +40,11 @@ public class DetailedWeatherActivity extends AppCompatActivity {
         result = result + "feels like: " + feels_like + "\n";
         result = result + "humidity: " + humidity + "\n";
         result = result + "pressure: " + pressure + "\n";
-        result = result + "min temperature: " + min_temp + "\n";
-        result = result + "max temperature: " + max_temp + "\n";
+
+        if (day_number > 0) {
+            result = result + "min temperature: " + min_temp + "\n";
+            result = result + "max temperature: " + max_temp + "\n";
+        }
 
         descriptionTextView.setText(result);
 

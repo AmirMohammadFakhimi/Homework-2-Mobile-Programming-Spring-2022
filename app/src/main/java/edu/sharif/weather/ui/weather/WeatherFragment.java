@@ -222,17 +222,6 @@ public class WeatherFragment extends Fragment implements ForecastRecyclerViewAda
     @Override
     public void onItemClick(View view, int position) {
         Weather weather = weathers.get(position);
-/*        NavHostFragment.findNavController(WeatherFragment.this)
-                .navigate(WeatherFragmentDirections
-                        .actionNavigationWeatherToDetailedWeatherFragment(position,
-                                weather.getDescription(),
-                                (float) weather.getTemperature(),
-                                (float) weather.getFeelsLike(),
-                                (float) weather.getHumidity(),
-                                (float) weather.getPressure(),
-                                (float) weather.getMinTemperature(),
-                                (float) weather.getMaxTemperature(),
-                                 weather.getIcon()));*/
 
         Intent intent = new Intent(getContext(), DetailedWeatherActivity.class);
         intent.putExtra("day_number", position);
