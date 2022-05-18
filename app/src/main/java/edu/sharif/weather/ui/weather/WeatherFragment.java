@@ -9,6 +9,7 @@ import android.os.Looper;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -74,24 +75,25 @@ public class WeatherFragment extends Fragment implements ForecastRecyclerViewAda
         submitButton.setEnabled(true);
 
         submitButton.setOnClickListener(view1 -> {
-            for (int i=0 ; i < 3 ; i++) {
-                submitClicked = true;
-                if (binding.latitudeLongitudeRadio.isChecked()){
-                    if (latitude.getError() == null && !latitude.getText().toString().isEmpty() &&
-                            (longitude == null || (longitude.getError() == null && !longitude.getText().toString().isEmpty()))){
-                        if (adapter != null) adapter.clear();
-                        binding.progressBar.setVisibility(View.VISIBLE);
-                        getCityInfo();
-                    }
-                }
-                else {
-                    if (inputCity.getError() == null && !inputCity.getText().toString().isEmpty()) {
-                        if (adapter != null) adapter.clear();
-                        binding.progressBar.setVisibility(View.VISIBLE);
-                        getCityInfo();
-                    }
-                }
+            goForSubmit();
+        });
+
+        binding.longitudeEditText.setOnKeyListener((view1, keyCode, event) -> {
+            if ((event.getAction() == KeyEvent.ACTION_DOWN) &&
+                    (keyCode == KeyEvent.KEYCODE_ENTER)) {
+                goForSubmit();
+                return true;
             }
+            return false;
+        });
+
+        binding.submitButton.setOnKeyListener((view1, keyCode, event) -> {
+            if ((event.getAction() == KeyEvent.ACTION_DOWN) &&
+                    (keyCode == KeyEvent.KEYCODE_ENTER)) {
+                goForSubmit();
+                return true;
+            }
+            return false;
         });
 
         binding.latitudeLongitudeRadio.setOnCheckedChangeListener((group, isChecked) -> {
@@ -122,6 +124,27 @@ public class WeatherFragment extends Fragment implements ForecastRecyclerViewAda
         viewModel = ViewModelProviders.of(this).get(CityViewModel.class);
     }
 
+    private void goForSubmit() {
+        for (int i=0 ; i < 3 ; i++) {
+            submitClicked = true;
+            if (binding.latitudeLongitudeRadio.isChecked()){
+                if (latitude.getError() == null && !latitude.getText().toString().isEmpty() &&
+                        (longitude == null || (longitude.getError() == null && !longitude.getText().toString().isEmpty()))){
+                    if (adapter != null) adapter.clear();
+                    binding.progressBar.setVisibility(View.VISIBLE);
+                    getCityInfo();
+                }
+            }
+            else {
+                if (inputCity.getError() == null && !inputCity.getText().toString().isEmpty()) {
+                    if (adapter != null) adapter.clear();
+                    binding.progressBar.setVisibility(View.VISIBLE);
+                    getCityInfo();
+                }
+            }
+        }
+    }
+
     @Override
     public void onDestroyView() {
         super.onDestroyView();
@@ -131,28 +154,7 @@ public class WeatherFragment extends Fragment implements ForecastRecyclerViewAda
     @Override
     public void onStart() {
         super.onStart();
-        for (int i=0 ; i < 3 ; i++) {
-            submitClicked = true;
-            if (binding.latitudeLongitudeRadio.isChecked()){
-                if (latitude.getError() == null && !latitude.getText().toString().isEmpty() &&
-                        (longitude == null || (longitude.getError() == null && !longitude.getText().toString().isEmpty()))){
-                    if (adapter != null) adapter.clear();
-                    binding.progressBar.setVisibility(View.VISIBLE);
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                        getCityInfo();
-                    }
-                }
-            }
-            else {
-                if (inputCity.getError() == null && !inputCity.getText().toString().isEmpty()) {
-                    if (adapter != null) adapter.clear();
-                    binding.progressBar.setVisibility(View.VISIBLE);
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                        getCityInfo();
-                    }
-                }
-            }
-        }
+        goForSubmit();
     }
 
     private void addDelayForEditText(EditText main, EditText toValidate) {
