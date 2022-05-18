@@ -26,6 +26,7 @@ public class SettingsFragment extends Fragment {
 
         darkModeSwitch =
                 binding.switch1;
+        darkModeSwitch.setChecked(AppCompatDelegate.getDefaultNightMode() == AppCompatDelegate.MODE_NIGHT_YES);
 
         darkModeSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> {
             if (isChecked) {

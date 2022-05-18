@@ -38,7 +38,7 @@ public class DetailedWeatherActivity extends AppCompatActivity {
             if (day_number == 0)
                 result = result + "Right now" + "\n";
             else if (day_number == 1)
-                result = result + "Tomorrow" + day_number + "\n";
+                result = result + "Tomorrow" + "\n";
             else
                 result = result + day_number + " days from today" + "\n";
         }
