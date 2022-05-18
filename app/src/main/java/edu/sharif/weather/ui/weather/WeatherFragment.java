@@ -75,9 +75,21 @@ public class WeatherFragment extends Fragment implements ForecastRecyclerViewAda
 
         submitButton.setOnClickListener(view1 -> {
             submitClicked = true;
-            if (adapter != null) adapter.clear();
-            binding.progressBar.setVisibility(View.VISIBLE);
-            getCityInfo();
+            if (binding.latitudeLongitudeRadio.isChecked()){
+                if (latitude.getError() == null && !latitude.getText().toString().isEmpty() &&
+                        (longitude == null || (longitude.getError() == null && !longitude.getText().toString().isEmpty()))){
+                    if (adapter != null) adapter.clear();
+                    binding.progressBar.setVisibility(View.VISIBLE);
+                    getCityInfo();
+                }
+            }
+            else {
+                if (inputCity.getError() == null && !inputCity.getText().toString().isEmpty()) {
+                    if (adapter != null) adapter.clear();
+                    binding.progressBar.setVisibility(View.VISIBLE);
+                    getCityInfo();
+                }
+            }
         });
 
         binding.latitudeLongitudeRadio.setOnCheckedChangeListener((group, isChecked) -> {
