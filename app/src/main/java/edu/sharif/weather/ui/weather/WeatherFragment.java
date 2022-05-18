@@ -128,6 +128,33 @@ public class WeatherFragment extends Fragment implements ForecastRecyclerViewAda
         binding = null;
     }
 
+    @Override
+    public void onStart() {
+        super.onStart();
+        for (int i=0 ; i < 3 ; i++) {
+            submitClicked = true;
+            if (binding.latitudeLongitudeRadio.isChecked()){
+                if (latitude.getError() == null && !latitude.getText().toString().isEmpty() &&
+                        (longitude == null || (longitude.getError() == null && !longitude.getText().toString().isEmpty()))){
+                    if (adapter != null) adapter.clear();
+                    binding.progressBar.setVisibility(View.VISIBLE);
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                        getCityInfo();
+                    }
+                }
+            }
+            else {
+                if (inputCity.getError() == null && !inputCity.getText().toString().isEmpty()) {
+                    if (adapter != null) adapter.clear();
+                    binding.progressBar.setVisibility(View.VISIBLE);
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                        getCityInfo();
+                    }
+                }
+            }
+        }
+    }
+
     private void addDelayForEditText(EditText main, EditText toValidate) {
         main.addTextChangedListener(
                 new TextWatcher() {
