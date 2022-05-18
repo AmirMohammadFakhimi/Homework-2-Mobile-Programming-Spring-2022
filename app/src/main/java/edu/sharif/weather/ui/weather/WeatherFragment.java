@@ -122,6 +122,7 @@ public class WeatherFragment extends Fragment implements ForecastRecyclerViewAda
                     @Override
                     public void onTextChanged(CharSequence s, int start, int before, int count) {
                         submitClicked = false;
+                        submitButton.setEnabled(true);
                         firstRun = false;
                     }
 
@@ -149,6 +150,7 @@ public class WeatherFragment extends Fragment implements ForecastRecyclerViewAda
                                                         new Handler(Looper.getMainLooper()).post(() -> {
                                                             if (adapter != null) adapter.clear();
                                                             binding.progressBar.setVisibility(View.VISIBLE);
+                                                            submitButton.setEnabled(false);
                                                             getCityInfo();
                                                         });
                                                     }
