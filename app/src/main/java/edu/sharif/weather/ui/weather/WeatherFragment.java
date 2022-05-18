@@ -50,6 +50,8 @@ public class WeatherFragment extends Fragment implements ForecastRecyclerViewAda
     private CityViewModel viewModel;
     private ForecastRecyclerViewAdaptor adapter;
     private ArrayList<Weather> weathers;
+    private Boolean submitClicked = false;
+    private Boolean firstRun = false;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -69,6 +71,14 @@ public class WeatherFragment extends Fragment implements ForecastRecyclerViewAda
         longitude = binding.longitudeEditText;
         inputCity = binding.cityEditText;
         submitButton = binding.submitButton;
+        submitButton.setEnabled(true);
+
+        submitButton.setOnClickListener(view1 -> {
+            submitClicked = true;
+            if (adapter != null) adapter.clear();
+            binding.progressBar.setVisibility(View.VISIBLE);
+            getCityInfo();
+        });
 
         binding.latitudeLongitudeRadio.setOnCheckedChangeListener((group, isChecked) -> {
             if (isChecked) {
@@ -111,7 +121,8 @@ public class WeatherFragment extends Fragment implements ForecastRecyclerViewAda
 
                     @Override
                     public void onTextChanged(CharSequence s, int start, int before, int count) {
-
+                        submitClicked = false;
+                        firstRun = false;
                     }
 
                     @Override
@@ -131,15 +142,19 @@ public class WeatherFragment extends Fragment implements ForecastRecyclerViewAda
                                     @Override
                                     public void run() {
 //                                        TODO: bug -> it runs twice
-                                        if (main.getError() == null && !main.getText().toString().isEmpty() &&
-                                                (toValidate == null || (toValidate.getError() == null && !toValidate.getText().toString().isEmpty()))) {
-                                            new Handler(Looper.getMainLooper()).post(() -> {
-                                                if (adapter != null) adapter.clear();
-                                                binding.progressBar.setVisibility(View.VISIBLE);
-                                                submitButton.setEnabled(false);
-                                                getCityInfo();
-                                            });
-                                        }
+                                            if (!firstRun) {
+                                                if (!submitClicked) {
+                                                    if (main.getError() == null && !main.getText().toString().isEmpty() &&
+                                                            (toValidate == null || (toValidate.getError() == null && !toValidate.getText().toString().isEmpty()))) {
+                                                        new Handler(Looper.getMainLooper()).post(() -> {
+                                                            if (adapter != null) adapter.clear();
+                                                            binding.progressBar.setVisibility(View.VISIBLE);
+                                                            getCityInfo();
+                                                        });
+                                                    }
+                                                    firstRun = true;
+                                                }
+                                            }
                                     }
                                 },
                                 DELAY
