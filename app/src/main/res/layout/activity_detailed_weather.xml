@@ -11,6 +11,7 @@
         android:id="@+id/descriptionTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:gravity="center"
         android:lineSpacingExtra="10sp"
         android:textColor="@color/textColor"
         android:textStyle="bold"
