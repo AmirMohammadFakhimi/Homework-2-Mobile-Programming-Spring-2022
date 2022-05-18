@@ -21,14 +21,12 @@ public class CityViewModel extends AndroidViewModel {
 
     @RequiresApi(api = Build.VERSION_CODES.O)
     public LiveData<City> getCityInfo(View view, double latitude, double longitude) {
-//        TODO: maybe it's not correct to pass view to viewModel
         city = cityRepository.getCityInfo(view, latitude, longitude);
         return city;
     }
 
     @RequiresApi(api = Build.VERSION_CODES.O)
     public LiveData<City> getCityInfo(View view, String cityName) {
-//        TODO: maybe it's not correct to pass view to viewModel
         city = cityRepository.getCityInfo(view, cityName);
         return city;
     }

@@ -74,9 +74,7 @@ public class WeatherFragment extends Fragment implements ForecastRecyclerViewAda
         submitButton = binding.submitButton;
         submitButton.setEnabled(true);
 
-        submitButton.setOnClickListener(view1 -> {
-            goForSubmit();
-        });
+        submitButton.setOnClickListener(view1 -> goForSubmit());
 
         longitude.setOnKeyListener((view1, keyCode, event) -> {
             if ((event.getAction() == KeyEvent.ACTION_DOWN) &&
@@ -187,7 +185,6 @@ public class WeatherFragment extends Fragment implements ForecastRecyclerViewAda
                                     @RequiresApi(api = Build.VERSION_CODES.O)
                                     @Override
                                     public void run() {
-//                                        TODO: bug -> it runs twice
                                             if (!firstRun) {
                                                 if (!submitClicked) {
                                                     if (main.getError() == null && !main.getText().toString().isEmpty() && !main.getText().toString().equals("-") &&
@@ -266,7 +263,7 @@ public class WeatherFragment extends Fragment implements ForecastRecyclerViewAda
             else
                 cityName = city.getName();
 
-//            TODO: lastUpdatedTime updates same as liveData!!!!
+//            TODO: lastUpdatedTime updates same as liveData!! -> I think it's because of the emulator!
             binding.cityInfo.setText(cityName + "\n" +
                     city.getLatitude() + "°, " + city.getLongitude() + "°\n" +
                     "Last Update: " + city.getLastUpdatedTime()
