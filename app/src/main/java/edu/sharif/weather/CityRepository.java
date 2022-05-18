@@ -3,7 +3,6 @@ package edu.sharif.weather;
 import android.annotation.SuppressLint;
 import android.app.Application;
 import android.os.Build;
-import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
