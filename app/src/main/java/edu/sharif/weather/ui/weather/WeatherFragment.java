@@ -78,7 +78,7 @@ public class WeatherFragment extends Fragment implements ForecastRecyclerViewAda
             goForSubmit();
         });
 
-        binding.longitudeEditText.setOnKeyListener((view1, keyCode, event) -> {
+        longitude.setOnKeyListener((view1, keyCode, event) -> {
             if ((event.getAction() == KeyEvent.ACTION_DOWN) &&
                     (keyCode == KeyEvent.KEYCODE_ENTER)) {
                 goForSubmit();
@@ -87,7 +87,7 @@ public class WeatherFragment extends Fragment implements ForecastRecyclerViewAda
             return false;
         });
 
-        binding.submitButton.setOnKeyListener((view1, keyCode, event) -> {
+        inputCity.setOnKeyListener((view1, keyCode, event) -> {
             if ((event.getAction() == KeyEvent.ACTION_DOWN) &&
                     (keyCode == KeyEvent.KEYCODE_ENTER)) {
                 goForSubmit();
@@ -124,6 +124,7 @@ public class WeatherFragment extends Fragment implements ForecastRecyclerViewAda
         viewModel = ViewModelProviders.of(this).get(CityViewModel.class);
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.O)
     private void goForSubmit() {
         for (int i=0 ; i < 3 ; i++) {
             submitClicked = true;
@@ -151,6 +152,7 @@ public class WeatherFragment extends Fragment implements ForecastRecyclerViewAda
         binding = null;
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     public void onStart() {
         super.onStart();

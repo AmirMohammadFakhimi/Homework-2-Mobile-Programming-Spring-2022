@@ -143,11 +143,11 @@
         android:layout_height="0dp"
         android:layout_marginTop="10dp"
         android:background="@color/backGroundColor"
+        android:textColor="@color/textColor"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/city_info"
-        android:textColor="@color/textColor"/>
+        app:layout_constraintTop_toBottomOf="@+id/city_info" />
 
     <ProgressBar
         android:id="@+id/progressBar"
