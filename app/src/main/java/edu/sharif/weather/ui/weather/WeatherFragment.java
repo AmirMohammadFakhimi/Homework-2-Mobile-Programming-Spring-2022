@@ -186,8 +186,8 @@ public class WeatherFragment extends Fragment implements ForecastRecyclerViewAda
 //                                        TODO: bug -> it runs twice
                                             if (!firstRun) {
                                                 if (!submitClicked) {
-                                                    if (main.getError() == null && !main.getText().toString().isEmpty() &&
-                                                            (toValidate == null || (toValidate.getError() == null && !toValidate.getText().toString().isEmpty()))) {
+                                                    if (main.getError() == null && !main.getText().toString().isEmpty() && !main.getText().toString().equals("-") &&
+                                                            (toValidate == null || (toValidate.getError() == null && !toValidate.getText().toString().isEmpty() && !toValidate.getText().toString().equals("-")))) {
                                                         new Handler(Looper.getMainLooper()).post(() -> {
                                                             if (adapter != null) adapter.clear();
                                                             binding.progressBar.setVisibility(View.VISIBLE);
@@ -210,7 +210,8 @@ public class WeatherFragment extends Fragment implements ForecastRecyclerViewAda
         main.addTextChangedListener(new EditTextValidator(main) {
             @Override
             public void validate(EditText editText, String text) {
-                if (text.isEmpty()) {
+                if (text.isEmpty() || latitude.getText().toString().equals("-") ||
+                        longitude.getText().toString().equals("-")) {
                     submitButton.setEnabled(false);
                     return;
                 }
@@ -230,11 +231,13 @@ public class WeatherFragment extends Fragment implements ForecastRecyclerViewAda
     @RequiresApi(api = Build.VERSION_CODES.O)
     private void getCityInfo() {
         if (binding.latitudeLongitudeRadio.isChecked()) {
-            double latitude = Double.parseDouble(this.latitude.getText().toString());
-            double longitude = Double.parseDouble(this.longitude.getText().toString());
+            if (!latitude.getText().toString().equals("-") && !longitude.getText().toString().equals("-")) {
+                double latitude = Double.parseDouble(this.latitude.getText().toString());
+                double longitude = Double.parseDouble(this.longitude.getText().toString());
 
-            viewModel.getCityInfo(this.getView(), latitude, longitude)
-                    .observe(getViewLifecycleOwner(), this::doOnObserve);
+                viewModel.getCityInfo(this.getView(), latitude, longitude)
+                        .observe(getViewLifecycleOwner(), this::doOnObserve);
+            }
         } else {
             String cityName = inputCity.getText().toString();
 
