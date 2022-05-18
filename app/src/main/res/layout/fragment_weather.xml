@@ -108,18 +108,19 @@
 
     <Button
         android:id="@+id/submit_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="89dp"
+        android:layout_height="34dp"
+        android:background="@color/submitButtonbackGroundColor"
         android:enabled="false"
         android:text="@string/submit"
         android:textAllCaps="true"
+        android:textColor="@color/submitButtonTextColor"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/linearLayout2"
-        app:layout_constraintVertical_bias="0.02"
-        android:textColor="@color/submitButtonTextColor"
-        android:background="@color/submitButtonbackGroundColor"/>
+        app:layout_constraintVertical_bias="0.047" />
 
     <TextView
         android:id="@+id/city_info"
@@ -127,7 +128,6 @@
         android:layout_height="wrap_content"
         android:background="@color/backGroundColor"
         android:gravity="center"
-        android:text="@string/no_city_selected"
         android:textAllCaps="false"
         android:textColor="@color/textColor"
         android:textSize="16sp"

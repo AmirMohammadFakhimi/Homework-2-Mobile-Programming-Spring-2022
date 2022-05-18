@@ -34,7 +34,14 @@ public class DetailedWeatherActivity extends AppCompatActivity {
         String icon_code = intent.getStringExtra("icon_code");
 
         String result = "";
-        result = result + "Day: " + day_number + "\n";
+        {
+            if (day_number == 0)
+                result = result + "Right now" + "\n";
+            else if (day_number == 1)
+                result = result + "Tomorrow" + day_number + "\n";
+            else
+                result = result + day_number + " days from today" + "\n";
+        }
         result = result + "Description: " + description + "\n";
         result = result + "temperature: " + temperature + "\n";
         result = result + "feels like: " + feels_like + "\n";

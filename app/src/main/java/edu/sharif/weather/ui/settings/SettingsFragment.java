@@ -73,8 +73,8 @@ public class SettingsFragment extends Fragment {
 //                    }
 //                });
 
-        final TextView textView = binding.textDashboard;
-        settingsViewModel.getText().observe(getViewLifecycleOwner(), textView::setText);
+//        final TextView textView = binding.textDashboard;
+//        settingsViewModel.getText().observe(getViewLifecycleOwner(), textView::setText);
         return root;
     }
 

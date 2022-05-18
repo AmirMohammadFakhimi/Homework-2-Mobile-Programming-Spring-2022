@@ -1,18 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="purple_200">#FFBB86FC</color>
-    <color name="purple_500">#FF6200EE</color>
+    <color name="purple_200">#5555AA</color>
+    <color name="purple_500">#5555AA</color>
     <color name="purple_700">#FF3700B3</color>
     <color name="teal_200">#FF03DAC5</color>
     <color name="teal_700">#FF018786</color>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
-    <color name="colorAccent">#FF4081</color>
+  <!--  <color name="colorAccent">#FF4081</color> -->
+    <color name="colorAccent">#5555AA</color>
 
     <!-- for light mode FCFCFC-->
-    <color name="backGroundColor">#B8E0FF</color>
+    <color name="backGroundColor">#DDDDEE</color>
     <color name="textColor">#000000</color>
     <color name="textColorHint">#5c5f61</color>
-    <color name="submitButtonTextColor">#212121</color>
-    <color name="submitButtonbackGroundColor">#FF03DAC5</color>
+    <color name="submitButtonTextColor">#FFFFFF</color>
+    <color name="submitButtonbackGroundColor">#5555AA</color>
 </resources>
