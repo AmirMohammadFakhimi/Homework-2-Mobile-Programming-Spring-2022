@@ -13,9 +13,10 @@ public class Weather {
     private double humidity;
     private String icon;
     private String description;
+    private final double KtoC = -273.15;
 
     public double getTemperature() {
-        return temperature;
+        return Math.round((temperature + KtoC) * 10.0) / 10.0;
     }
 
     public void setTemperature(double temperature) {
@@ -23,7 +24,7 @@ public class Weather {
     }
 
     public double getFeelsLike() {
-        return feelsLike;
+        return Math.round((feelsLike + KtoC) * 10.0) / 10.0;
     }
 
     public void setFeelsLike(double feelsLike) {
@@ -31,7 +32,7 @@ public class Weather {
     }
 
     public double getMinTemperature() {
-        return minTemperature;
+        return Math.round((minTemperature - 2 + KtoC) * 10.0) / 10.0;
     }
 
     public void setMinTemperature(double minTemperature) {
@@ -39,7 +40,7 @@ public class Weather {
     }
 
     public double getMaxTemperature() {
-        return maxTemperature;
+        return Math.round((maxTemperature + KtoC) * 10.0) / 10.0;
     }
 
     public void setMaxTemperature(double maxTemperature) {
